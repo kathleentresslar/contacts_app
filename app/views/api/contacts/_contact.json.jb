@@ -1,0 +1,10 @@
+{
+  id: contact.id,
+  first_name: contact.first_name,
+  middle_name: contact.middle_name,
+  last_name: contact.last_name,
+  email: contact.email,
+  phone_number: contact.phone_number,
+  japanese_number: contact.japanese_number,
+  bio: contact.bio,
+}
