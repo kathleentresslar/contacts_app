@@ -1,16 +1,10 @@
 class Contact < ApplicationRecord
+  belongs_to :user
+
   validates :first_name, presence: true
   validates :last_name, presence: true
-
-  class EmailValidator < ActiveModel::EachValidator
-    def validate_each(record, attribute, value)
-      unless value =~ /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
-        record.errors[attribute] << (options[:message] || "is not an email")
-      end
-    end
-  end
-
-  validates :email, uniqueness: true, email: true
+  validates :email, uniqueness: true
+  validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
 
   def friendly_updated_at
     created_at.strftime("%B %e, %Y")

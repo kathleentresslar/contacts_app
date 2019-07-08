@@ -1,21 +1,29 @@
 class Api::ContactsController < ApplicationController
-  def display_contact
-    @contact = Contact.first
-    render "first_contact.json.jb"
-  end
-
   def index
-    @contacts = Contact.all
+    @contacts = current_user.contacts
+
+    if params[:search]
+      @contacts = @contacts.where("first_name ILIKE ? OR last_name ILIKE ? OR middle_name ILIKE ? OR email ILIKE ? OR bio ILIKE ?", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%")
+    end
+    @contacts = @contacts.order(id: :asc)
     render "index.json.jb"
   end
 
   def show
-    @contact = Contact.find_by(id: params["id"])
+    @contact = current_user.find_by(id: params["id"])
     render "show.json.jb"
   end
 
   def create
-    @contact = Contact.new(first_name: params["first_name"], last_name: params["last_name"], phone_number: params["phone_number"], email: params["email"], bio: params["bio"], middle_name: params["middle_name"])
+    @contact = Contact.new(
+      first_name: params["first_name"],
+      last_name: params["last_name"],
+      phone_number: params["phone_number"],
+      email: params["email"],
+      bio: params["bio"],
+      middle_name: params["middle_name"],
+      user_id: current_user.id,
+    )
 
     if @contact.save
       render "show.json.jb"
